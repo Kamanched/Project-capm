@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>D20 Roll with Animation</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      #result {
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 30px;
+        font-family: Arial, sans-serif;
+        color: #fff;
+        z-index: 1;
+      }
+      #rollButton {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        font-size: 20px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        z-index: 2;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="result">Roll the D20!</div>
+    <button id="rollButton">Roll D20</button>
+
+    <a-scene>
+      <a-camera position="0 1.6 5" look-controls="enabled: true"></a-camera>
+
+      <a-light type="ambient" color="#ffffff" intensity="0.5"></a-light>
+      <a-light type="directional" position="2 4 -3" intensity="1.5"></a-light>
+
+      <!-- Dice (Icosahedron) with Animation -->
+      <a-entity id="dice" position="0 1.5 -5" rotation="0 0 0">
+        <a-entity
+          id="d20"
+          geometry="primitive:icosahedron; radius: 1;"
+          material="color: #FFFFFF; emissive: #FFFFF; emissive-intensity: 0.5;"
+          animation__rotation="property: rotation; to: 360 360 360; dur: 1000; loop: false;"
+          animation__movement="property: position; to: 0 1.5 -5; dur: 1500; easing: easeInOutSine; loop: false;">
+        </a-entity>
+      </a-entity>
+
+      <!-- Ground (plane) -->
+      <a-box position="0 -1 0" width="5" height="0.1" depth="5" color="#000000"></a-box>
+
+      <a-sky color="#ECECEC"></a-sky>
+    </a-scene>
+
+    <script>
+      const rollButton = document.getElementById('rollButton');
+      const resultDisplay = document.getElementById('result');
+      const diceEntity = document.getElementById('d20');
+
+      rollButton.addEventListener('click', () => {
+        const rollResult = Math.floor(Math.random() * 20) + 1;
+
+        // Update the result display
+        resultDisplay.textContent = `Rolled: ${rollResult}`;
+
+        // Apply random rotations and movements for the "roll" effect
+        // Set a new random position and rotation for the dice
+        const randomRotationX = Math.random() * 360;
+        const randomRotationY = Math.random() * 360;
+        const randomRotationZ = Math.random() * 360;
+        
+        const randomPosX = (Math.random() - 0.5) * 5;
+        const randomPosY = Math.random() * 2 + 1; // Keep the dice above the ground
+        const randomPosZ = (Math.random() - 0.5) * 5;
+
+        // Stop any previous animations and apply new ones
+        diceEntity.setAttribute('animation__rotation', `property: rotation; to: ${randomRotationX} ${randomRotationY} ${randomRotationZ}; dur: 1000; loop: false;`);
+        diceEntity.setAttribute('animation__movement', `property: position; to: ${randomPosX} ${randomPosY} ${randomPosZ}; dur: 1500; easing: easeInOutSine; loop: false;`);
+      });
+    </script>
+  </body>
+</html> 
